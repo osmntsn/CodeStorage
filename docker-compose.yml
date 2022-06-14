@@ -9,4 +9,4 @@ services:
       context: .
       dockerfile: CodeStorage.API/Dockerfile
     ports:
-      - 5678:5678
+      - 5070:5070

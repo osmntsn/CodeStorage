@@ -76,7 +76,7 @@
             "dependsOn": [
                 "docker-build: debug"
             ],
-            "dockerRun": {},
+            "dockerRun": { "ports": [{ "protocol": "tcp", "containerPort": 5070, "hostPort": 8779}]},
             "netCore": {
                 "appProject": "${workspaceFolder}/CodeStorage.API/CodeStorage.API.csproj",
                 "enableDebugging": true
