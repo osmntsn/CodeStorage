@@ -1,8 +1,10 @@
 using CodeStorage.Application.CodeSnipped;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeStorage.API.Controllers;
 
+[Authorize]
 public class CodeSnippedsController : ApiControllerBase
 {
     [HttpGet("{id}")]

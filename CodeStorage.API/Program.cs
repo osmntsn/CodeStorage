@@ -1,14 +1,16 @@
-using Microsoft.IdentityModel.Tokens;
 using CodeStorage.API.Identity;
 using AspNetCore.Identity.MongoDbCore.Models;
-using IdentityServer4.Models;
 using CodeStorage.Infrastructure;
 using CodeStorage.Application;
 using Microsoft.OpenApi.Models;
 using Microsoft.Net.Http.Headers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using CodeStorage.Domain.User;
 
 var builder = WebApplication.CreateBuilder(args);
-
+ConfigurationManager configuration = builder.Configuration;
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -16,29 +18,36 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<IUserService,UserService>();
 
 builder.Services.AddIdentityConfiguration(builder.Configuration);
 
-builder.Services.AddIdentityServer()
-            .AddDeveloperSigningCredential()
-            .AddInMemoryClients(new List<Client>())
-            .AddInMemoryApiScopes(new List<ApiScope>())
-            .AddAspNetIdentity<ApplicationUser>();
+// Adding Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+
+// Adding Jwt Bearer
+.AddJwtBearer(options =>
+{
+    options.SaveToken = true;
+    options.RequireHttpsMetadata = false;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = configuration["JWT:ValidAudience"],
+        ValidIssuer = configuration["JWT:ValidIssuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"]))
+    };
+});
+
 
 var baseAddress = "http://localhost:8779/"; //builder.WebHost.GetSetting(WebHostDefaults.ServerUrlsKey)?.Split(';').OrderBy(x => x.Contains("https://") ? 0 : 1).FirstOrDefault()?.Trim('/').Replace("http://+", "http://localhost") + '/';
-builder.Services.AddAuthentication("Bearer").AddJwtBearer("Bearer",
-             options =>
-             {
-                 options.Authority = baseAddress;
-                 options.Audience = baseAddress;
-                 options.RequireHttpsMetadata = false;
-
-                 options.TokenValidationParameters = new
-                  TokenValidationParameters()
-                 {
-                     ValidateAudience = false
-                 };
-             });
 
 builder.Services.AddSwaggerGen(
     c =>
@@ -57,7 +66,7 @@ builder.Services.AddSwaggerGen(
                             ["remote.api.read"] = "remote.api.read",
                             ["remote.api.write"] = "remote.api.write"
                         },
-                        TokenUrl = new Uri($"{baseAddress}connect/token"),
+                        TokenUrl = new Uri($"{baseAddress}api/users/login"),
                     },
                 },
                 In = ParameterLocation.Header,
@@ -83,7 +92,6 @@ builder.Services.AddSwaggerGen(
 
 var app = builder.Build();
 
-app.UseIdentityServer();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

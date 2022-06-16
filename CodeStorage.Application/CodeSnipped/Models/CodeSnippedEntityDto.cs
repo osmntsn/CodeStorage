@@ -13,5 +13,5 @@ public class CodeSnippedEntityDto : IMapFrom<CodeSnippedEntity>
     public string UserId { get; set; } = string.Empty;
     public bool IsPublic { get; set; } = false;
     public DateTime InsertDate { get; set; }
-    public string LastUpdateDate { get; set; } = string.Empty;
+    public DateTime LastUpdateDate { get; set; } = DateTime.Now;
 }
