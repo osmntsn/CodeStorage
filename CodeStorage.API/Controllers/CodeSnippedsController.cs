@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CodeStorage.API.Controllers;
 
-public class CodeSnippedController : ApiControllerBase
+public class CodeSnippedsController : ApiControllerBase
 {
     [HttpGet("{id}")]
     public async Task<CodeSnippedEntityDto> Get([FromRoute]string id)
