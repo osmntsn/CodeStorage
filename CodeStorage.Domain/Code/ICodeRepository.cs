@@ -2,7 +2,7 @@ namespace CodeStorage.Domain.Code;
 
 public interface ICodeRepository
 {
-    string InsertCodeSnipped(CodeSnippedEntity codeSnipped);
-    CodeSnippedEntity GetCodeSnipped(string id);
+    Task<string> InsertCodeSnipped(CodeSnippedEntity codeSnipped);
+    Task<CodeSnippedEntity?> GetCodeSnipped(string id);
 
 }

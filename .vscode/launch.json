@@ -33,7 +33,9 @@
             "preLaunchTask": "docker-run: debug",
             "netCore": {
                 "appProject": "${workspaceFolder}/CodeStorage.API/CodeStorage.API.csproj"
-            }
+            },
+            
+            
         }
     ]
 }

@@ -1,14 +1,26 @@
 using CodeStorage.Domain.Code;
+using Microsoft.Extensions.Configuration;
 
-public class CodeRepository : ICodeRepository
+namespace CodeStorage.Infrastructure.Data;
+
+public class CodeRepository : ElasticsearchRepositoryBase, ICodeRepository
 {
-    public CodeSnippedEntity GetCodeSnipped(string id)
+    public CodeRepository(IConfiguration configuration) : base(configuration)
     {
-        throw new NotImplementedException();
+
     }
 
-    public string InsertCodeSnipped(CodeSnippedEntity codeSnipped)
+    public async Task<CodeSnippedEntity?> GetCodeSnipped(string id)
     {
-        throw new NotImplementedException();
+        var result = await _elasticClient.GetAsync<CodeSnippedEntity>(id);
+        ControlElasticsearchResult(result);
+        return result.Source;
+    }
+
+    public async Task<string> InsertCodeSnipped(CodeSnippedEntity codeSnipped)
+    {
+        var result = await _elasticClient.IndexAsync(codeSnipped);
+        ControlElasticsearchResult(result);
+        return result.Id;
     }
 }

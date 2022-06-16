@@ -28,7 +28,7 @@ services:
           "    dns:\n"\
           "      - es01\n"\
           "      - localhost\n"\
-          "    ip:\n"\
+          "    ip:\n"\k
           "      - 127.0.0.1\n"\
           "  - name: es02\n"\
           "    dns:\n"\

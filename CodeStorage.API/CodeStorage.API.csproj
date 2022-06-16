@@ -6,7 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <DockerfileRunArguments>-p 5000:5000</DockerfileRunArguments>  
   </PropertyGroup>
-
+   <ItemGroup>
+    <ProjectReference Include="../CodeStorage.Infrastructure/CodeStorage.Infrastructure.csproj" />
+    <ProjectReference Include="../CodeStorage.Application/CodeStorage.Application.csproj" />
+  </ItemGroup>
   <ItemGroup>
     <!-- <PackageReference Include="AspNetCore.Identity.Mongo" Version="8.3.3" /> -->
     <PackageReference Include="IdentityServer4" Version="4.1.2" />

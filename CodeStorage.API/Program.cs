@@ -2,6 +2,8 @@ using Microsoft.IdentityModel.Tokens;
 using CodeStorage.API.Identity;
 using AspNetCore.Identity.MongoDbCore.Models;
 using IdentityServer4.Models;
+using CodeStorage.Infrastructure;
+using CodeStorage.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure();
 
 builder.Services.AddIdentityConfiguration(builder.Configuration);
 
